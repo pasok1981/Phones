@@ -40,4 +40,4 @@ if __name__ == "__main__":
     for i in range(1, int(sys.argv[1])):
         x.append(get_links(
             "https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=families&page={0}".format(int(i))))
-    write_to_csv(x, "data.csv")
+    write_to_csv(x, "data.csv") 
