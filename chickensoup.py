@@ -12,12 +12,9 @@ def get_links(url="https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=familie
         match.extract()
     list_with_phones = souped.find_all(
         class_="js-sku-link image_link")  # Hacky
-    '''Write to CSV later'''
     names, prices = [phone.get('title') for phone in list_with_phones], [
         price.text.strip() for price in souped.find_all(class_="price react-component")]
-
-    # for name, price in zip(names, prices):
-    #    print("{0} -> {1}".format(name, price))
+    
     return zip(names, prices)
 
 
@@ -31,7 +28,7 @@ def write_to_csv(data, path):
     except IOError as er:
         raise er
     finally:
-        print("Written to file")
+        print("Attempted to write data to file {}".format(path))
 
 
 if __name__ == "__main__":
