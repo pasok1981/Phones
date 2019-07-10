@@ -5,16 +5,15 @@ import requests
 import csv
 import sys
 
-def get_links(url="https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=families&page=2"):
+def get_links(url):
     res = requests.get(url)
     souped = bs(res.text, "html.parser")
     for match in souped.find_all("span"):
         match.extract()
-    list_with_phones = souped.find_all(
-        class_="js-sku-link image_link")  # Hacky
-    names, prices = [phone.get('title') for phone in list_with_phones], [
+    names, prices = [phone.get('title') for phone in souped.find_all(
+        class_="js-sku-link image_link")], [
         price.text.strip() for price in souped.find_all(class_="price react-component")]
-    
+
     return zip(names, prices)
 
 
@@ -37,4 +36,4 @@ if __name__ == "__main__":
     for i in range(1, int(sys.argv[1])):
         x.append(get_links(
             "https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=families&page={0}".format(int(i))))
-    write_to_csv(x, "data.csv") 
+    write_to_csv(x, "data.csv")
