@@ -5,6 +5,7 @@ import requests
 import csv
 import sys
 import time
+import getopt
 
 def get_links(url):
     res = requests.get(url)
@@ -31,10 +32,29 @@ def write_to_csv(data, path):
         print("Attempted to write data to file {}".format(path))
 
 
-if __name__ == "__main__":
+def main():
+    start, end=0, 0
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'se:h', ['help', 'start=', 'end='])
+    except getopt.GetoptError as er:
+        print(str(er))
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            print("chickensoup.py --start=<start page> --end=<last page>")
+            sys.exit()
+        elif opt == '--start':
+            start = int(arg)
+        elif opt == '--end':
+            end = int(arg)
+        else:
+            assert False, "Unsupported option"
+            
+    print("Starting from: {}".format(start))
+    print("End: {}".format(end))
 
     x = []
-    for i in range(1, int(sys.argv[1])):
+    for i in range(start, end):
         x.append(get_links(
             "https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=families&page={0}".format(int(i))))
 
@@ -43,3 +63,6 @@ if __name__ == "__main__":
             print ("Going to Sleep...")
 
     write_to_csv(x, "data.csv")
+
+if __name__ == "__main__":
+    main()
