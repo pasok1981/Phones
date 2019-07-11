@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as bs
 import requests
 import csv
 import sys
+import time
 
 def get_links(url):
     res = requests.get(url)
@@ -36,4 +37,9 @@ if __name__ == "__main__":
     for i in range(1, int(sys.argv[1])):
         x.append(get_links(
             "https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=families&page={0}".format(int(i))))
+
+        if i % 10 == 0:
+            time.sleep(5)
+            print ("Going to Sleep...")
+
     write_to_csv(x, "data.csv")
