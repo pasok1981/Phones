@@ -6,6 +6,7 @@ import csv
 import sys
 import time
 import getopt
+import json
 
 def get_links(url):
     res = requests.get(url)
@@ -16,7 +17,8 @@ def get_links(url):
         class_="js-sku-link image_link")], [
         price.text.strip() for price in souped.find_all(class_="price react-component")]
 
-    return zip(names, prices)
+    return list(zip(names, prices))
+	
 
 
 def write_to_csv(data, path):
@@ -29,9 +31,19 @@ def write_to_csv(data, path):
     except IOError as er:
         raise er
     finally:
-        print("Attempted to write data to file {}".format(path))
+        print("Attempted to write data to CSV file {}".format(path))
 
-
+def write_to_json(data, path):
+	dict_ = [dict(d) for d in data]
+	try:
+		with open(path, 'w', encoding='utf-8') as out:
+			json.dump(dict_, out, indent=2, ensure_ascii=False)
+	except IOError as er:
+		raise er
+	finally:
+		print("Attempted to write to JSON file {}".format(path))
+		
+		
 def main():
     start, end=0, 0
     try:
@@ -62,7 +74,7 @@ def main():
             time.sleep(5)
             print ("Going to Sleep...")
 
-    write_to_csv(x, "data.csv")
+    write_to_json(x, "data.json")
 
 if __name__ == "__main__":
     main()
