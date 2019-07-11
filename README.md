@@ -6,5 +6,4 @@
 
 
 
-
-                                                ⚠️ **Use wisely** ⚠️
+⚠️ **Use wisely** ⚠️
