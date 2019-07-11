@@ -1,6 +1,6 @@
 # Phones
 
-## Get all phones and prices from skroutz.gr
-### Takes 2 command line argument to specify beginning and end page.
+## Fetch mobile phones and their respective prices from skroutz.gr
+###### Takes exactly 2 command line arguments to specify beginning and end page.
 
 **Use wisely**
