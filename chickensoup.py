@@ -82,7 +82,7 @@ def main():
             time.sleep(5)
             print("Going to Sleep...")
 
-    write_to_json(x, "data.json") if json_ else write_to_csv(x, "data.csv")
+    write_to_json(x, "data.json") if json_ and not csv_ else write_to_csv(x, "data.csv")
 
 
 if __name__ == "__main__":
