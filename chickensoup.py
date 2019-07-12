@@ -8,14 +8,15 @@ import sys
 import time
 import getopt
 import json
+import re
 
 def get_links(url):
     res = requests.get(url)
     souped = bs(res.text, "html.parser")
     for match in souped.find_all("span"):
         match.extract()
-    names, prices = [phone.get('title') for phone in souped.find_all(
-        class_="js-sku-link image_link")], [
+    names, prices = [phone.get('title') for phone in souped.find_all("a",
+        class_="js-sku-link sku-link")], [
         price.text.strip() for price in souped.find_all(class_="price react-component")]
 
     return list(zip(names, prices))
@@ -76,9 +77,19 @@ def sort_csv(path):
     except IOError as er:
         raise er
     finally:
-        print(f"Attempted to read file {path}") 
-
-
+        print(f"Attempted to read file {path}")
+         
+def validate_url(_):
+    rgx = re.compile(
+        r'^(?:http|ftp)s?://'
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' 
+        r'localhost|' 
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        r'(?::\d+)?'
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)    
+   
+    return re.match(rgx, _)
+        
 def main():
     usage = "chickensoup.py --start=<start page> --end=<last page>"
     start,end = 0,0
@@ -105,15 +116,19 @@ def main():
         	csv_, json_ = True, False
         else:
             assert False, "Unsupported option"
-
+            
+    assert start < end, "Starting page number can't be greater than ending page"         
+    
     print("Starting from: {}".format(start))
     print("End: {}".format(end))
-
+    
+    url = input("Enter URL: ")
+    assert validate_url(url) is not None, "URL is not formed properly"
+    
     x = []
     for i in range(start, end):
-        x.append(get_links(
-            "https://www.skroutz.gr/c/40/kinhta-thlefwna.html?from=families&page={0}".format(int(i))))
-
+        x.append(get_links(url+"?page={}".format(int(i))))
+        
         if i % 10 == 0:
             time.sleep(5)
             print("Going to Sleep...")
